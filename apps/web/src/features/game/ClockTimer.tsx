@@ -41,14 +41,14 @@ export function ClockTimer({
         stroke="#1f1b4d"
         strokeWidth="3"
       />
-      <rect x="51" y="21" width="18" height="12" rx="3" fill="#b9b5e6" />
+      <rect x="51" y="21" width="18" height="12" rx="3" fill="#4b2fc9" />
       <rect
         x="16"
         y="30"
         width="14"
         height="9"
         rx="3"
-        fill="#b9b5e6"
+        fill="#4b2fc9"
         transform="rotate(-38 23 34)"
       />
       <rect
@@ -57,10 +57,10 @@ export function ClockTimer({
         width="14"
         height="9"
         rx="3"
-        fill="#b9b5e6"
+        fill="#4b2fc9"
         transform="rotate(38 97 34)"
       />
-      <circle cx={CX} cy={CY} r="52" fill="#c9c6ee" />
+      <circle cx={CX} cy={CY} r="52" fill="#6f4cf0" />
       <circle
         cx={CX}
         cy={CY}
@@ -93,7 +93,7 @@ export function ClockTimer({
         cx={CX}
         cy={CY}
         r="5"
-        fill="#b9b5e6"
+        fill="#4b2fc9"
         stroke="#1f1b4d"
         strokeWidth="2"
       />

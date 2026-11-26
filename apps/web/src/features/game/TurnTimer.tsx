@@ -91,8 +91,10 @@ export function TurnTimer({
             max={3600}
             step={1}
             autoFocus
+            placeholder="60"
             value={duration}
             aria-invalid={!valid}
+            onFocus={(event) => event.currentTarget.select()}
             onChange={(event) => {
               onDurationChange(event.target.value);
               const next = Number(event.target.value);

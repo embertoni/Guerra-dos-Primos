@@ -243,7 +243,6 @@ export default function App() {
                 onSave={(chip) =>
                   dispatch({ type: 'chip', territoryId: selected.id, chip })
                 }
-                
               />
             </>
           )}

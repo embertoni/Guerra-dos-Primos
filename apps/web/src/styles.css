@@ -1301,35 +1301,6 @@ dd {
   transform: translateY(2px);
   box-shadow: 0 1px 0 var(--ink);
 }
-.clock-edit {
-  background: var(--sun-soft);
-  padding: 0 16px;
-}
-.details .clock-edit input:not([type='radio']):not([type='color']) {
-  width: 64px;
-  min-height: 0;
-  height: 100%;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: var(--ink);
-  font-size: 22px;
-  font-weight: 900;
-  text-align: right;
-  appearance: textfield;
-  -moz-appearance: textfield;
-}
-.clock-edit input::-webkit-outer-spin-button,
-.clock-edit input::-webkit-inner-spin-button {
-  margin: 0;
-  appearance: none;
-  -webkit-appearance: none;
-}
-.clock-edit:has(input[aria-invalid='true']) {
-  background: #ffd6d6;
-  border-color: #c82f3c;
-}
 
 /* Recomeçar e pausar/retomar */
 .clock-actions {
@@ -1368,6 +1339,78 @@ dd {
   cursor: not-allowed;
 }
 
+/* Edição do tempo */
+.details .clock-edit {
+  gap: 4px;
+  min-width: 128px;
+  padding: 0 20px;
+  border: 2px solid var(--ink);
+  background: #fffdf4;
+  color: var(--ink);
+  box-shadow: 0 3px 0 var(--ink);
+  transition:
+    box-shadow 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+.details .clock-edit:focus-within {
+  background: #fff;
+  box-shadow:
+    0 3px 0 var(--ink),
+    0 0 0 4px #cfc3f3;
+}
+.details .clock-edit input:not([type='radio']):not([type='color']) {
+  width: 4ch;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 22px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  caret-color: #9467df;
+  box-shadow: none;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.clock-edit input::-webkit-outer-spin-button,
+.clock-edit input::-webkit-inner-spin-button {
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.details .clock-edit input::placeholder {
+  color: #c9c6ee;
+  opacity: 1;
+}
+.details .clock-edit input:focus,
+.details .clock-edit input:focus-visible {
+  outline: none;
+}
+.details .clock-edit input::selection {
+  background: var(--sun-soft);
+  color: var(--ink);
+}
+.details .clock-edit span {
+  color: #6c66a8;
+  font-size: 18px;
+  font-weight: 800;
+}
+.details .clock-edit:has(input[aria-invalid='true']) {
+  border-color: #c82f3c;
+  background: #fff5f5;
+  box-shadow: 0 3px 0 #c82f3c;
+}
+.details .clock-edit:has(input[aria-invalid='true']):focus-within {
+  box-shadow:
+    0 3px 0 #c82f3c,
+    0 0 0 4px #f6c4c9;
+}
+
 .clock-overlay .time-up {
   margin: 0;
   padding: 3px 12px;
@@ -1386,8 +1429,7 @@ dd {
   font-size: 11px;
   text-align: center;
 }
-.clock-overlay button:focus-visible,
-.clock-overlay input:focus-visible {
+.clock-overlay button:focus-visible {
   outline: 3px solid #9467df;
   outline-offset: 2px;
 }
@@ -1891,8 +1933,6 @@ dd {
   border-top: 2px solid var(--lav-line);
   background: #fbfaff;
 }
-
-
 /* ---------- Decomposição em primos (território com ficha 2 ou 3) ---------- */
 .details .prime-info {
   display: grid;
