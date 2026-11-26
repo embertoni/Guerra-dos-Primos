@@ -1,5 +1,7 @@
 # Revisão do mapa
 
+Na aplicação, números são desenhados na última camada, depois de todos os territórios e marcadores, para que fronteiras posteriores não cubram os dígitos. Ajustes visuais específicos de fonte e posição ficam em `apps/web/src/features/board/labelLayout.ts`, preservando o catálogo e a geometria de origem. O SVG gerado pela ferramenta de traçado continua sendo a referência de geometria; os ajustes finais de rótulos pertencem à apresentação da aplicação. Os testes de navegador conferem as 42 âncoras nos territórios correspondentes e o espaçamento entre os rótulos em desktop e celular. Use zoom para inspecionar as regiões pequenas.
+
 Referência recebida: `tabuleiro-war.jpeg`, 2000 × 1075. Os 42 números foram comparados visualmente com o inventário de `REGRAS.md`; confira a tabela em [inventario.md](inventario.md). O SVG usa exatamente esse viewBox e preserva as posições dos continentes.
 
 ## Fonte e regeneração

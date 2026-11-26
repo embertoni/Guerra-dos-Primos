@@ -1,5 +1,37 @@
 # Progresso — 25/11/2026
 
+## Revisão atual — sobreposição de vitória
+
+Implementados placar atualizado antes da abertura do diálogo, identificação do vencedor por nome e cor e duas ações: **Voltar último movimento** e **Resetar jogo**. Diálogo nativo na camada superior, fundo bloqueado, header/main inertes, Escape e clique no fundo sem fechamento e foco restrito às ações. Timer anterior cancelado; comandos de turno/ficha bloqueados enquanto há vencedor.
+
+Snapshot anterior à ficha decisiva permite restaurar domínio, fichas, pontuação, vez e rodada sem perder o restante da partida. Reset retorna à preparação com nomes/cores preservados e estado do jogo limpo. Verificações finais aprovadas: `npm test` (20 testes), `npm run test:e2e` (16 cenários em desktop e celular), `npm run lint`, `npm run typecheck`, `npm run build`, `node scripts/smoke-build.mjs` e `git diff --check`. O E2E verifica placar atualizado, cor/nome do vencedor, foco circular, bloqueio de cliques reais no fundo e de Escape, restauração de pontos e reset. Capturas de vitória [desktop](vitoria-desktop.png) e [móvel](vitoria-mobile.png) inspecionadas.
+
+O responsável solicitou expressamente commits de todas as alterações pendentes e envio ao GitHub ao concluir. Entrega organizada em implementação/testes e documentação/capturas, incluindo os controles manuais, cadastro, regras e revisões do mapa/interface implementados nos pedidos anteriores ainda sem commit. Destino: https://github.com/embertoni/Guerra-dos-Primos, branch `main`. Verificação de padrões comuns de credenciais nos arquivos publicáveis sem ocorrências. A publicação do código não é deploy da aplicação. Os registros seguintes são históricos.
+
+## Revisão atual — preparação e números do mapa
+
+Implementados contador de turnos na parte inferior com botões sem Jn, apenas círculos centralizados; seleção de território escondida e bloqueada antes do início; início preso ao rodapé do sidebar; exclusão individual por ×; reordenação de jogadores por alça de seis pontos com mouse/toque e alternativa de teclado, preservando nomes, cores e identidade.
+
+Números movidos para a última camada SVG, acima de todas as fronteiras e fichas. Ajustes visuais de fonte e âncora centralizados em `labelLayout.ts`, sem modificar a geometria. Clique no número aponta ao seu território. A conferência inicial encontrou a âncora do 81 fora da ilha vetorizada e proximidade entre 92/114 no celular, corrigidas na revisão.
+
+Verificações finais aprovadas: `npm test` (18 testes), `npm run test:e2e` (16 cenários em desktop e Pixel 7 emulado), `npm run typecheck`, `npm run lint`, `npm run build`, `node scripts/smoke-build.mjs` e `git diff --check`. Arraste do cadastro verificado com mouse e toque real emulado; alternativa de teclado preserva foco. O navegador verifica as 42 âncoras dentro do território correspondente, ausência de colisões entre rótulos e camada numérica acima de todos os desenhos. Capturas de preparação e números examinadas nas duas telas. Nenhum commit, push, deploy ou regra matemática nova nesta revisão. Os registros seguintes são históricos.
+
+Capturas atuais: [preparação desktop](preparacao-desktop.png), [preparação móvel](preparacao-mobile.png), [números desktop](numeros-desktop.png) e [números móvel](numeros-mobile.png). Capturas de partida e seis jogadores também atualizadas.
+
+## Atualização atual — controle manual, ranking e turnos flutuantes
+
+Autorização explícita do responsável para o usuário conduzir e validar o jogo na vida real. Implementados cadastro de 2–6 jogadores com nomes e cores, início manual da partida, seleção direta de vez por botões coloridos em barra horizontal flutuante, avanço cíclico com contador de rodada, timer editável iniciado manualmente e fichas vermelhas de 1/2/3 registradas pelo operador.
+
+O ranking é um painel fixo acima da legenda, fora do sidebar. Mostra cores, nomes e soma das fichas atuais em ordem decrescente. A chegada a 18 registra o primeiro vencedor; correções e transferências recalculam os pontos e requerem confirmação. A vez independe da classificação do placar. O timer não valida respostas, não concede fichas e não avança sozinho. Trocar de jogador ou território cancela o timer anterior.
+
+Documentação normativa atualizada para versão 0.3 com as definições expressas do responsável, preservando o histórico e as alterações de regras já presentes no início da tarefa. As decisões técnicas de correção, duração padrão e organização da interface constam em `DECISOES.md`.
+
+Verificações finais: `npm run lint`, `npm run typecheck` e `npm run build` aprovados; `npm test` com 16 testes aprovados; E2E final com 12 cenários aprovados (desktop e Pixel 7 emulado); `node scripts/smoke-build.mjs` aprovado com o build final servido pelo Express. Cobrem seleção de 42 territórios, arraste/zoom, cadastro 2–6, troca direta e cíclica de vez, timer manual, transferência e soma de fichas, aviso de vitória, confirmação de nova partida e disposição fixa do ranking acima da legenda. Corrigido nome acessível dos rádios de ficha que ficava oculto pelo CSS móvel e ajustada a tipagem dos seletores de teste. Capturas de partida e de seis jogadores inspecionadas em desktop e celular.
+
+Capturas desta entrega: [partida desktop](partida-manual-desktop.png), [partida móvel](partida-manual-mobile.png), [seis jogadores desktop](seis-jogadores-desktop.png) e [seis jogadores móvel](seis-jogadores-mobile.png).
+
+Limites atuais: partida em memória local, sem persistência ou sincronização; recarregar limpa o estado. Validação matemática, restrição do maior território e ataques continuam sob responsabilidade humana. Nenhuma API de partida, banco, commit, push ou deploy nesta tarefa. Os registros abaixo descrevem entregas anteriores e seus resultados históricos.
+
 ## Publicação do código no GitHub
 
 Publicação pública solicitada explicitamente pelo responsável. Repositório criado em https://github.com/embertoni/Guerra-dos-Primos e Git local inicializado na branch `main`. O primeiro envio inclui código, documentação e imagens de referência; dependências, ferramentas locais, resultados temporários, `.env` e bancos estão ignorados. Verificação de padrões comuns de credenciais nos arquivos publicáveis não encontrou ocorrências. Esta publicação do código não é deploy da aplicação nem aceite do mapa; a fase 2 permanece não iniciada.

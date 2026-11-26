@@ -1,6 +1,6 @@
 # Guerra dos Primos
 
-Aplicação de apoio ao tabuleiro educativo. **Entrega atual: fases 0 e 1, para revisão do mapa.** O protótipo permite selecionar territórios e simular cores de domínio exclusivamente na memória do navegador. Não decide respostas, pontos, ataques ou vencedores.
+Aplicação de apoio ao tabuleiro educativo, com mapa interativo e **controle manual de uma partida local**. O usuário conduz o jogo e valida as respostas na vida real; a página registra fichas, soma pontos, controla a vez e oferece um timer. Indica o primeiro jogador a alcançar 18 pontos. Não verifica primalidade, decomposição ou legalidade de ataques.
 
 ## Executar localmente
 
@@ -15,13 +15,20 @@ Os mesmos comandos funcionam em PowerShell e Unix. Abra http://127.0.0.1:5173. H
 
 ## Conferir o mapa
 
-- Selecione uma das 42 formas com mouse, toque, Tab e Enter/Espaço, ou pela lista de números. A lista também dá acesso às ilhas pequenas.
-- Consulte número, continente e proprietário no painel. Experimente Ana/J1 ou Bruno/J2 no controle **Proprietário de teste**. Cada território mantém seu domínio independente. Recarregar limpa todo o teste.
+- Cadastre de 2 a 6 participantes com nomes e cores diferentes. Exclua um participante pelo **×** da sua linha; o mínimo de dois permanece protegido. Arraste a alça de seis pontos para mudar a ordem, ou use as setas para cima/baixo com foco na alça. Nome e cor acompanham o participante.
+- Clique em **Iniciar partida**, fixo no rodapé da sidebar. Antes disso, o mapa pode ser movido e ampliado, mas os territórios não podem ser selecionados e a sidebar mostra apenas o cadastro.
+- Após o início, selecione uma das 42 formas com mouse, toque, Tab e Enter/Espaço, clique em seu número ou use a lista da sidebar. A lista também dá acesso às ilhas pequenas.
+- Na barra flutuante horizontal **inferior**, clique no círculo colorido centralizado de um jogador para escolher sua vez. Os botões não exibem J1–J6; nomes permanecem nos rótulos acessíveis e dicas. A troca direta preserva a rodada. **Próximo** percorre o ciclo e incrementa a rodada ao voltar ao primeiro jogador. Com seis participantes em telas estreitas, role horizontalmente os botões.
+- Selecione um território e configure **Tempo em segundos** (1–3600). Clique em **Iniciar timer**. Pode pausar, retomar e restaurar o tempo; o fim não concede pontos nem passa a vez. Trocar de jogador ou território cancela a contagem anterior, mantendo a duração configurada.
+- Valide a resposta presencialmente, escolha o jogador e a ficha vermelha de 1, 2 ou 3 pontos e clique em **Registrar ficha**. Correções, transferências e retiradas pedem confirmação. Há uma ficha atual por território; substituir não acumula outra ficha sobre a anterior.
+- O placar flutuante acima da legenda mostra cor, nome e soma das fichas atuais em ordem decrescente. Ao alcançar 18 pontos, o placar é atualizado e abre uma sobreposição com nome e cor do vencedor. O restante da página fica bloqueado, inclusive por teclado; Escape e clique no fundo não fecham o diálogo.
+- Na vitória, **Voltar último movimento** restaura a partida imediatamente antes da ficha que causou a vitória, incluindo proprietário, pontos, vez e rodada, e libera os controles. **Resetar jogo** limpa o tabuleiro, pontos e rodadas e volta à preparação com os nomes e cores disponíveis para editar. O timer anterior é cancelado ao abrir a vitória.
 - Alterne entre mapa vetorizado, original e comparação dos contornos. A imagem original mantém os números impressos; o SVG controla seus próprios números no modo vetorizado.
 - Arraste o mapa com o botão esquerdo do mouse (ou com um dedo) e use a roda do mouse para ampliar no ponto do cursor. O botão com ícone de mira restaura posição e zoom. Com foco no mapa, use setas, `+`, `-` e `0`. A proporção e as coordenadas seguem o original de 2000 × 1075.
-- A tela contém header, mapa e sidebar à direita. A legenda em lista, a visualização e a opção de números ficam no painel flutuante fixo inferior esquerdo. O sidebar tem rolagem própria quando necessário.
+- A tela contém header, mapa e sidebar à direita para seleção, timer e fichas. Ranking e legenda são painéis flutuantes fixos à esquerda; os turnos ficam na parte inferior da tela. Em telas estreitas, ranking e legenda sobem para reservar a faixa dos turnos. O sidebar tem rolagem própria quando necessário.
+- Números ficam em uma camada SVG acima de fronteiras e fichas, com tamanhos e âncoras ajustados para as regiões menores. A geometria dos territórios permanece separada desse ajuste visual.
 
-Abra dois navegadores para revisar o mapa em paralelo: **eles têm estados locais independentes**. Ainda não existem sala, código de entrada, credenciais, persistência ou sincronização. O fluxo de dois navegadores na mesma sala só será implementado na fase 2, após revisão humana explícita.
+**A partida fica apenas na memória deste navegador; recarregar reinicia o cadastro e o tabuleiro.** Abra dois navegadores para revisar em paralelo: eles têm estados locais independentes. Ainda não existem sala, código de entrada, credenciais, persistência ou sincronização. O fluxo de dois navegadores na mesma sala pertence à fase 2, ainda não implementada. Para recomeçar sem recarregar, abra **Opções da partida → Nova partida** e confirme; os nomes e cores anteriores ficam disponíveis para edição.
 
 ## Verificações
 
@@ -39,16 +46,18 @@ npm run test:e2e
 
 ## Organização e manutenção
 
-| Caminho                                   | Responsabilidade                                           |
-| ----------------------------------------- | ---------------------------------------------------------- |
-| `apps/web/src/features/board/Board.tsx`   | SVG acessível e seleção                                    |
-| `apps/web/src/App.tsx`                    | Controles e estado local de revisão                        |
-| `packages/shared/src/board/catalog.json`  | IDs, números, continentes e âncoras                        |
-| `packages/shared/src/board/geometry.json` | Paths fechados, agrupados por território                   |
-| `packages/shared/src/index.ts`            | Validação Zod e tipos compartilhados                       |
-| `apps/server/src`                         | Express mínimo, health check e arquivos estáticos          |
-| `scripts/trace-board.py`                  | Fonte reproduzível da vetorização, com divisões explícitas |
-| `docs/MAPA.md`                            | Procedimento e pendências da revisão visual                |
+| Caminho                                   | Responsabilidade                                               |
+| ----------------------------------------- | -------------------------------------------------------------- |
+| `apps/web/src/features/board/Board.tsx`   | SVG acessível e seleção                                        |
+| `apps/web/src/App.tsx`                    | Integração dos controles e estado local da partida             |
+| `apps/web/src/features/game/`             | Cadastro, turnos flutuantes, ranking, timer e editor de fichas |
+| `packages/shared/src/game/manualGame.ts`  | Validação de participantes, fichas, ciclo, placar e meta de 18 |
+| `packages/shared/src/board/catalog.json`  | IDs, números, continentes e âncoras                            |
+| `packages/shared/src/board/geometry.json` | Paths fechados, agrupados por território                       |
+| `packages/shared/src/index.ts`            | Validação Zod e tipos compartilhados                           |
+| `apps/server/src`                         | Express mínimo, health check e arquivos estáticos              |
+| `scripts/trace-board.py`                  | Fonte reproduzível da vetorização, com divisões explícitas     |
+| `docs/MAPA.md`                            | Procedimento e pendências da revisão visual                    |
 
 O arquivo recebido se chama `tabuleiro-war.jpeg`, embora os documentos iniciais citem `Tabuleiro_mar.jpeg`. A cópia servida está em `apps/web/public/assets/tabuleiro-original.jpeg`. O original e os documentos normativos foram preservados.
 
