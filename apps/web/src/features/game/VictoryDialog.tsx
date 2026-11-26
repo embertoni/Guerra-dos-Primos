@@ -8,12 +8,14 @@ export function VictoryDialog({
   canUndo,
   onUndo,
   onReset,
+  onViewMap,
 }: {
   winner: Player;
   score: number;
   canUndo: boolean;
   onUndo: () => void;
   onReset: () => void;
+  onViewMap: () => void;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const undoRef = useRef<HTMLButtonElement>(null);
@@ -79,6 +81,15 @@ export function VictoryDialog({
           onClick={onUndo}
         >
           Voltar último movimento
+        </button>
+        <button
+          className="view-victory"
+          onClick={() => {
+            dialogRef.current?.close();
+            onViewMap();
+          }}
+        >
+          Ver mapa
         </button>
         <button className="reset-victory" onClick={onReset}>
           Resetar jogo

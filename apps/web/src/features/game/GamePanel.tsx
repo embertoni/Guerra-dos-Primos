@@ -4,6 +4,8 @@ import {
   WINNING_SCORE,
   type ManualGame,
 } from '@primos/shared/game';
+import type { CSSProperties } from 'react';
+import { ScoreDots } from './ScoreDots';
 
 export function TurnControls({
   game,
@@ -30,8 +32,16 @@ export function TurnControls({
   return (
     <section className="turn-overlay" aria-label="Controle de rodadas">
       <div className="turn-caption">
-        <span>Rodada {game.round}</span>
-        <h2>{active.displayName}</h2>
+        <div className="round-badge" aria-hidden="true">
+          <span>Rodada</span>
+          <b key={game.round}>{game.round}</b>
+        </div>
+        <div className="turn-who">
+          <span className="turn-label" aria-hidden="true">
+            Na vez
+          </span>
+          <h2>{active.displayName}</h2>
+        </div>
         <span className="sr-only">
           RODADA {game.round} · VEZ {game.turnIndex + 1}/{game.players.length}
         </span>
@@ -64,7 +74,18 @@ export function TurnControls({
         title="Próximo jogador"
         onClick={onNext}
       >
-        Próximo
+        <span>Próximo</span>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m9 5 7 7-7 7" />
+        </svg>
       </button>
     </section>
   );
@@ -89,15 +110,21 @@ export function Scoreboard({ game }: { game: ManualGame }) {
         {getStandings(game).map((player) => (
           <li
             key={player.id}
+            className={`score-card${player.id === active.id ? ' is-active' : ''}`}
+            style={{ '--player-color': player.color } as CSSProperties}
             data-player-id={player.id}
             aria-label={`${player.displayName}: ${player.score} ${player.score === 1 ? 'ponto' : 'pontos'}`}
           >
-            <i className="player-swatch" style={{ background: player.color }} />
-            <span>
-              {player.displayName}
-              {player.id === active.id && <small>Na vez</small>}
-            </span>
-            <strong>{player.score}</strong>
+            <div className="score-head">
+              <span className="score-name">
+                {player.displayName}
+                {player.id === active.id && (
+                  <small className="sr-only">Na vez</small>
+                )}
+              </span>
+              <strong>{player.score}</strong>
+            </div>
+            <ScoreDots score={player.score} />
           </li>
         ))}
       </ol>
@@ -108,10 +135,14 @@ export function Scoreboard({ game }: { game: ManualGame }) {
 export function MatchOptions({ onNew }: { onNew: () => void }) {
   const [confirmNew, setConfirmNew] = useState(false);
   return (
-    <details className="match-options">
-      <summary>Opções da partida</summary>
-      <p>O usuário controla as vezes, as fichas e a validação das respostas.</p>
-      <button onClick={() => setConfirmNew(true)}>Nova partida</button>
+    <div className="match-options">
+      <button
+        type="button"
+        className="new-match"
+        onClick={() => setConfirmNew(true)}
+      >
+        Nova partida
+      </button>
       {confirmNew && (
         <div
           role="alertdialog"
@@ -125,6 +156,6 @@ export function MatchOptions({ onNew }: { onNew: () => void }) {
           </div>
         </div>
       )}
-    </details>
+    </div>
   );
 }

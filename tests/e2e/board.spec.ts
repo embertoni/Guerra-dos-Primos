@@ -47,6 +47,7 @@ test('ilha inferior seleciona o 62 e recebe o mesmo domínio sem afetar o 369', 
   await expect(
     page.locator('[data-territory-id="oceania-03"]'),
   ).toHaveAccessibleName(/neutro/);
+  await page.getByRole('button', { name: 'Mostrar legenda' }).click();
   await page.getByLabel('Visualização').selectOption('original');
   await expect(page.locator('svg image')).toHaveAttribute(
     'href',

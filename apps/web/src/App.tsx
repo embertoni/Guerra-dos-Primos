@@ -12,6 +12,8 @@ import { TurnTimer } from './features/game/TurnTimer';
 import { ChipEditor } from './features/game/ChipEditor';
 import { useManualMatch } from './features/game/useManualMatch';
 import { VictoryDialog } from './features/game/VictoryDialog';
+import { PrimeInfo } from './features/game/PrimeInfo';
+import { ResultPanel } from './features/game/ResulPanel';
 
 export default function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -19,8 +21,9 @@ export default function App() {
   const [initialPlayers, setInitialPlayers] = useState<Player[] | undefined>();
   const [mode, setMode] = useState<'vector' | 'original' | 'overlay'>('vector');
   const [showNumbers, setShowNumbers] = useState(true);
-  const [legendExpanded, setLegendExpanded] = useState(true);
+  const [legendExpanded, setLegendExpanded] = useState(false);
   const [timerDuration, setTimerDuration] = useState('60');
+  const [viewingResult, setViewingResult] = useState(false);
   const selected = territories.find((t) => t.id === selectedId);
   const continent = continents.find((c) => c.id === selected?.continentId);
   const chip = selectedId ? game?.chips[selectedId] : undefined;
@@ -29,9 +32,17 @@ export default function App() {
   const winner = game?.players.find(
     (player) => player.id === game.goalOrder[0],
   );
+  // Ficha de 2 ou 3 pontos é definitiva: o território só mostra a decomposição.
+  const locked = !!chip && chip.points >= 2;
+  const showResultMap = !!winner && viewingResult;
   function resetMatch() {
     dispatch({ type: 'reset' });
     setSelectedId(null);
+    setViewingResult(false);
+  }
+  function undoMove() {
+    dispatch({ type: 'undo' });
+    setViewingResult(false);
   }
   const owners = Object.fromEntries(
     Object.entries(game?.chips ?? {}).map(([id, chip]) => [
@@ -41,7 +52,7 @@ export default function App() {
   );
   return (
     <>
-      <header className="header" inert={!!winner}>
+      <header className="header" inert={!!winner && !showResultMap}>
         <a className="brand" href="/">
           GUERRA <span>DOS PRIMOS</span>
         </a>
@@ -49,7 +60,7 @@ export default function App() {
           Controle manual <span>Partida local</span>
         </div>
       </header>
-      <main className="workspace" inert={!!winner}>
+      <main className="workspace" inert={!!winner && !showResultMap}>
         <section className="map-panel" aria-label="Mapa interativo">
           <Board
             selectedId={selectedId}
@@ -61,7 +72,7 @@ export default function App() {
             mode={mode}
             interactive={game !== null && !winner}
           />
-          {game && (
+          {game && !showResultMap && (
             <TurnControls
               game={game}
               onNext={() => dispatch({ type: 'next' })}
@@ -142,18 +153,34 @@ export default function App() {
           className={`details${game ? '' : ' setup-mode'}`}
           aria-label="Controle da partida"
         >
-          {game ? (
-            <MatchOptions onNew={resetMatch} />
-          ) : (
-            <PlayerSetup
-              initialPlayers={initialPlayers}
-              onStart={(players) => {
-                setInitialPlayers(players);
-                dispatch({ type: 'start', players });
-              }}
+          {game && active && selected && !winner && !locked && (
+            <TurnTimer
+              key={`timer-${active.id}-${selected.id}`}
+              territoryNumber={selected.number}
+              playerName={active.displayName}
+              duration={timerDuration}
+              onDurationChange={setTimerDuration}
             />
           )}
-          {game && (
+          {showResultMap && winner ? (
+            <ResultPanel
+              winner={winner}
+              canUndo={previous !== null}
+              onUndo={undoMove}
+              onReset={resetMatch}
+            />
+          ) : (
+            !game && (
+              <PlayerSetup
+                initialPlayers={initialPlayers}
+                onStart={(players) => {
+                  setInitialPlayers(players);
+                  dispatch({ type: 'start', players });
+                }}
+              />
+            )
+          )}
+          {game && !showResultMap && (
             <section
               className="territory-details"
               aria-label="Detalhes do território"
@@ -165,10 +192,18 @@ export default function App() {
                     <h2 className="selected-number">{selected.number}</h2>
                     <p className="continent-name">{continent?.name}</p>
                     <p className="ownership">
+                      {owner && (
+                        <i
+                          className="owner-dot"
+                          style={{ background: owner.color }}
+                          aria-hidden="true"
+                        />
+                      )}
                       {owner
                         ? `${owner.displayName} · J${owner.seatIndex + 1} · ${chip!.points} ${chip!.points === 1 ? 'ponto' : 'pontos'}`
                         : 'Neutro'}
                     </p>
+                    {locked && <PrimeInfo number={selected.number} />}
                   </>
                 ) : (
                   <p className="empty">
@@ -198,15 +233,8 @@ export default function App() {
               </label>
             </section>
           )}
-          {game && active && selected && !winner && (
+          {game && active && selected && !winner && !locked && (
             <>
-              <TurnTimer
-                key={`timer-${active.id}-${selected.id}`}
-                territoryNumber={selected.number}
-                playerName={active.displayName}
-                duration={timerDuration}
-                onDurationChange={setTimerDuration}
-              />
               <ChipEditor
                 key={`chip-${active.id}-${selected.id}`}
                 players={game.players}
@@ -215,20 +243,26 @@ export default function App() {
                 onSave={(chip) =>
                   dispatch({ type: 'chip', territoryId: selected.id, chip })
                 }
+                
               />
             </>
           )}
+          {game && !showResultMap && <MatchOptions onNew={resetMatch} />}
         </aside>
       </main>
-      {game && winner && (
+      {game && winner && !showResultMap && (
         <VictoryDialog
+          onViewMap={() => {
+            setSelectedId(null);
+            setViewingResult(true);
+          }}
           key={winner.id}
           winner={winner}
           score={
             getStandings(game).find((player) => player.id === winner.id)!.score
           }
           canUndo={previous !== null}
-          onUndo={() => dispatch({ type: 'undo' })}
+          onUndo={undoMove}
           onReset={resetMatch}
         />
       )}

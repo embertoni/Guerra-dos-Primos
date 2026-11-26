@@ -53,3 +53,66 @@ it('restaura a ficha anterior, dono, pontos e vez ao desfazer a vitória e bloqu
   state = manualMatchReducer(state, { type: 'reset' });
   expect(state).toEqual({ game: null, previous: null });
 });
+const roster = [
+  { id: 'a', displayName: 'Ana', color: '#6641c9', seatIndex: 0 },
+  { id: 'b', displayName: 'Bruno', color: '#08695b', seatIndex: 1 },
+];
+it('registrar uma ficha passa a vez e conta a rodada', () => {
+  let state = manualMatchReducer(
+    { game: null, previous: null },
+    { type: 'start', players: roster },
+  );
+  state = manualMatchReducer(state, {
+    type: 'chip',
+    territoryId: 'north-01',
+    chip: { ownerId: 'a', points: 1 },
+  });
+  expect(state.game!.turnIndex).toBe(1);
+  expect(state.game!.round).toBe(1);
+  state = manualMatchReducer(state, {
+    type: 'chip',
+    territoryId: 'north-02',
+    chip: { ownerId: 'b', points: 1 },
+  });
+  expect(state.game!.turnIndex).toBe(0);
+  expect(state.game!.round).toBe(2);
+  const before = state;
+  state = manualMatchReducer(state, {
+    type: 'chip',
+    territoryId: 'north-02',
+    chip: null,
+  });
+  expect(state.game!.turnIndex).toBe(0);
+  expect(state.game!.chips['north-02']).toBeUndefined();
+  expect(before.game!.chips['north-02']).toBeDefined();
+});
+it('só territórios neutros ou com ficha de 1 ponto aceitam novo registro', () => {
+  let state = manualMatchReducer(
+    { game: null, previous: null },
+    { type: 'start', players: roster },
+  );
+  state = manualMatchReducer(state, {
+    type: 'chip',
+    territoryId: 'north-01',
+    chip: { ownerId: 'a', points: 1 },
+  });
+  state = manualMatchReducer(state, {
+    type: 'chip',
+    territoryId: 'north-01',
+    chip: { ownerId: 'b', points: 2 },
+  });
+  expect(state.game!.chips['north-01']).toEqual({ ownerId: 'b', points: 2 });
+  const locked = manualMatchReducer(state, {
+    type: 'chip',
+    territoryId: 'north-01',
+    chip: { ownerId: 'a', points: 3 },
+  });
+  expect(locked).toBe(state);
+  expect(
+    manualMatchReducer(state, {
+      type: 'chip',
+      territoryId: 'north-01',
+      chip: null,
+    }),
+  ).toBe(state);
+});

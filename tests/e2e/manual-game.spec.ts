@@ -25,6 +25,7 @@ test('controle manual: nomes, timer, ciclo, transferência, placar e vencedor', 
     'fixed',
   );
   await page.getByLabel('Escolher território').selectOption('north-01');
+  await page.getByRole('button', { name: 'Editar tempo (segundos)' }).click();
   await page.getByLabel('Tempo em segundos').fill('1');
   await expect(page.getByRole('timer')).toHaveText('00:01');
   await page

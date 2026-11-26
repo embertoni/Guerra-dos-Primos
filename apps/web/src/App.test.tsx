@@ -183,9 +183,12 @@ describe('revisão local do mapa', () => {
       render(<App />);
       startGame();
       fireEvent.click(screen.getByRole('button', { name: /^Território 907,/ }));
-      fireEvent.change(screen.getByLabelText('Tempo em segundos'), {
-        target: { value: '3' },
-      });
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Editar tempo (segundos)' }),
+      );
+      const secondsInput = screen.getByLabelText('Tempo em segundos');
+      fireEvent.change(secondsInput, { target: { value: '3' } });
+      fireEvent.keyDown(secondsInput, { key: 'Enter' });
       act(() => vi.advanceTimersByTime(4000));
       expect(screen.getByRole('timer')).toHaveTextContent('00:03');
       fireEvent.click(screen.getByRole('button', { name: 'Iniciar timer' }));
@@ -202,6 +205,33 @@ describe('revisão local do mapa', () => {
       expect(screen.getByRole('timer')).toHaveTextContent('00:03');
       act(() => vi.advanceTimersByTime(4000));
       expect(screen.getByRole('timer')).toHaveTextContent('00:03');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+  it('clicar no relógio pausa e o botão restaura o tempo máximo', () => {
+    vi.useFakeTimers();
+    try {
+      render(<App />);
+      startGame();
+      fireEvent.click(screen.getByRole('button', { name: /^Território 907,/ }));
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Editar tempo (segundos)' }),
+      );
+      const secondsInput = screen.getByLabelText('Tempo em segundos');
+      fireEvent.change(secondsInput, { target: { value: '10' } });
+      fireEvent.keyDown(secondsInput, { key: 'Enter' });
+      fireEvent.click(screen.getByRole('button', { name: 'Iniciar timer' }));
+      act(() => vi.advanceTimersByTime(3000));
+      expect(screen.getByRole('timer')).toHaveTextContent('00:07');
+      fireEvent.click(screen.getByRole('button', { name: 'Pausar timer' }));
+      act(() => vi.advanceTimersByTime(5000));
+      expect(screen.getByRole('timer')).toHaveTextContent('00:07');
+      expect(
+        screen.getByRole('button', { name: 'Retomar timer' }),
+      ).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Restaurar tempo' }));
+      expect(screen.getByRole('timer')).toHaveTextContent('00:10');
     } finally {
       vi.useRealTimers();
     }

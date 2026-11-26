@@ -33,10 +33,13 @@ export function manualMatchReducer(
   if (action.type === 'next') return { ...state, game: nextTurn(state.game) };
   if (action.type === 'select')
     return { ...state, game: selectTurn(state.game, action.index) };
-  return {
-    game: setTerritoryChip(state.game, action.territoryId, action.chip),
-    previous: state.game,
-  };
+  const existing = state.game.chips[action.territoryId];
+  // Fichas de 2 ou 3 pontos são definitivas; só 1 ponto ou neutro mudam.
+  if (existing && existing.points >= 2) return state;
+  let game = setTerritoryChip(state.game, action.territoryId, action.chip);
+  // Registrar uma ficha passa a vez, a menos que ela encerre a partida.
+  if (action.chip && game.goalOrder.length === 0) game = nextTurn(game);
+  return { game, previous: state.game };
 }
 export function useManualMatch() {
   return useReducer(manualMatchReducer, { game: null, previous: null });
