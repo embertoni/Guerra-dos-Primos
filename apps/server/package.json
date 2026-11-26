@@ -1,0 +1,14 @@
+{
+  "name": "@primos/server",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup src/index.ts --format esm --platform node --out-dir dist",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}

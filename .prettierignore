@@ -1,0 +1,9 @@
+package-lock.json
+.tools
+dist
+node_modules
+test-results
+playwright-report
+AGENTS.md
+REGRAS.md
+packages/shared/src/board/geometry.json

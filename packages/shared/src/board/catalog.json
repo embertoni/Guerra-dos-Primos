@@ -1,0 +1,417 @@
+{
+  "width": 2000,
+  "height": 1075,
+  "version": "original-trace-v1",
+  "continents": [
+    {
+      "id": "north",
+      "name": "América do Norte",
+      "baseColor": "#ff872e"
+    },
+    {
+      "id": "south",
+      "name": "América do Sul",
+      "baseColor": "#22b14c"
+    },
+    {
+      "id": "europe",
+      "name": "Europa",
+      "baseColor": "#0fa9d5"
+    },
+    {
+      "id": "africa",
+      "name": "África",
+      "baseColor": "#e934ee"
+    },
+    {
+      "id": "asia",
+      "name": "Ásia",
+      "baseColor": "#ffce10"
+    },
+    {
+      "id": "oceania",
+      "name": "Oceania",
+      "baseColor": "#970023"
+    }
+  ],
+  "territories": [
+    {
+      "id": "north-01",
+      "number": 907,
+      "continentId": "north",
+      "labelPosition": {
+        "x": 184,
+        "y": 148
+      }
+    },
+    {
+      "id": "north-02",
+      "number": 618,
+      "continentId": "north",
+      "labelPosition": {
+        "x": 329,
+        "y": 157
+      }
+    },
+    {
+      "id": "north-03",
+      "number": 467,
+      "continentId": "north",
+      "labelPosition": {
+        "x": 294,
+        "y": 227
+      }
+    },
+    {
+      "id": "north-04",
+      "number": 672,
+      "continentId": "north",
+      "labelPosition": {
+        "x": 421,
+        "y": 231
+      }
+    },
+    {
+      "id": "north-05",
+      "number": 709,
+      "continentId": "north",
+      "labelPosition": {
+        "x": 558,
+        "y": 223
+      }
+    },
+    {
+      "id": "north-06",
+      "number": 471,
+      "continentId": "north",
+      "labelPosition": {
+        "x": 274,
+        "y": 308
+      }
+    },
+    {
+      "id": "north-07",
+      "number": 548,
+      "continentId": "north",
+      "labelPosition": {
+        "x": 417,
+        "y": 335
+      }
+    },
+    {
+      "id": "north-08",
+      "number": 52,
+      "continentId": "north",
+      "labelPosition": {
+        "x": 267,
+        "y": 417
+      }
+    },
+    {
+      "id": "north-09",
+      "number": 299,
+      "continentId": "north",
+      "labelPosition": {
+        "x": 774,
+        "y": 94
+      }
+    },
+    {
+      "id": "south-01",
+      "number": 379,
+      "continentId": "south",
+      "labelPosition": {
+        "x": 472,
+        "y": 553
+      }
+    },
+    {
+      "id": "south-02",
+      "number": 55,
+      "continentId": "south",
+      "labelPosition": {
+        "x": 603,
+        "y": 680
+      }
+    },
+    {
+      "id": "south-03",
+      "number": 322,
+      "continentId": "south",
+      "labelPosition": {
+        "x": 492,
+        "y": 715
+      }
+    },
+    {
+      "id": "south-04",
+      "number": 415,
+      "continentId": "south",
+      "labelPosition": {
+        "x": 529,
+        "y": 831
+      }
+    },
+    {
+      "id": "europe-01",
+      "number": 354,
+      "continentId": "europe",
+      "labelPosition": {
+        "x": 852,
+        "y": 153
+      }
+    },
+    {
+      "id": "europe-02",
+      "number": 198,
+      "continentId": "europe",
+      "labelPosition": {
+        "x": 901,
+        "y": 226
+      }
+    },
+    {
+      "id": "europe-03",
+      "number": 150,
+      "continentId": "europe",
+      "labelPosition": {
+        "x": 1005,
+        "y": 178
+      }
+    },
+    {
+      "id": "europe-04",
+      "number": 373,
+      "continentId": "europe",
+      "labelPosition": {
+        "x": 1134,
+        "y": 223
+      }
+    },
+    {
+      "id": "europe-05",
+      "number": 114,
+      "continentId": "europe",
+      "labelPosition": {
+        "x": 950,
+        "y": 284
+      }
+    },
+    {
+      "id": "europe-06",
+      "number": 92,
+      "continentId": "europe",
+      "labelPosition": {
+        "x": 999,
+        "y": 255
+      }
+    },
+    {
+      "id": "europe-07",
+      "number": 271,
+      "continentId": "europe",
+      "labelPosition": {
+        "x": 1063,
+        "y": 284
+      }
+    },
+    {
+      "id": "africa-01",
+      "number": 216,
+      "continentId": "africa",
+      "labelPosition": {
+        "x": 921,
+        "y": 491
+      }
+    },
+    {
+      "id": "africa-02",
+      "number": 119,
+      "continentId": "africa",
+      "labelPosition": {
+        "x": 1064,
+        "y": 415
+      }
+    },
+    {
+      "id": "africa-03",
+      "number": 233,
+      "continentId": "africa",
+      "labelPosition": {
+        "x": 1113,
+        "y": 520
+      }
+    },
+    {
+      "id": "africa-04",
+      "number": 239,
+      "continentId": "africa",
+      "labelPosition": {
+        "x": 1077,
+        "y": 681
+      }
+    },
+    {
+      "id": "africa-05",
+      "number": 215,
+      "continentId": "africa",
+      "labelPosition": {
+        "x": 1081,
+        "y": 782
+      }
+    },
+    {
+      "id": "africa-06",
+      "number": 251,
+      "continentId": "africa",
+      "labelPosition": {
+        "x": 1240,
+        "y": 743
+      }
+    },
+    {
+      "id": "asia-01",
+      "number": 383,
+      "continentId": "asia",
+      "labelPosition": {
+        "x": 1524,
+        "y": 141
+      }
+    },
+    {
+      "id": "asia-02",
+      "number": 419,
+      "continentId": "asia",
+      "labelPosition": {
+        "x": 1696,
+        "y": 155
+      }
+    },
+    {
+      "id": "asia-03",
+      "number": 397,
+      "continentId": "asia",
+      "labelPosition": {
+        "x": 1355,
+        "y": 183
+      }
+    },
+    {
+      "id": "asia-04",
+      "number": 302,
+      "continentId": "asia",
+      "labelPosition": {
+        "x": 1542,
+        "y": 217
+      }
+    },
+    {
+      "id": "asia-05",
+      "number": 381,
+      "continentId": "asia",
+      "labelPosition": {
+        "x": 1251,
+        "y": 197
+      }
+    },
+    {
+      "id": "asia-06",
+      "number": 996,
+      "continentId": "asia",
+      "labelPosition": {
+        "x": 1324,
+        "y": 281
+      }
+    },
+    {
+      "id": "asia-07",
+      "number": 976,
+      "continentId": "asia",
+      "labelPosition": {
+        "x": 1543,
+        "y": 278
+      }
+    },
+    {
+      "id": "asia-08",
+      "number": 339,
+      "continentId": "asia",
+      "labelPosition": {
+        "x": 1526,
+        "y": 350
+      }
+    },
+    {
+      "id": "asia-09",
+      "number": 822,
+      "continentId": "asia",
+      "labelPosition": {
+        "x": 1203,
+        "y": 365
+      }
+    },
+    {
+      "id": "asia-10",
+      "number": 518,
+      "continentId": "asia",
+      "labelPosition": {
+        "x": 1427,
+        "y": 427
+      }
+    },
+    {
+      "id": "asia-11",
+      "number": 391,
+      "continentId": "asia",
+      "labelPosition": {
+        "x": 1575,
+        "y": 469
+      }
+    },
+    {
+      "id": "asia-12",
+      "number": 81,
+      "continentId": "asia",
+      "labelPosition": {
+        "x": 1788,
+        "y": 355
+      }
+    },
+    {
+      "id": "oceania-01",
+      "number": 63,
+      "continentId": "oceania",
+      "labelPosition": {
+        "x": 1582,
+        "y": 630
+      }
+    },
+    {
+      "id": "oceania-02",
+      "number": 265,
+      "continentId": "oceania",
+      "labelPosition": {
+        "x": 1682,
+        "y": 605
+      }
+    },
+    {
+      "id": "oceania-03",
+      "number": 369,
+      "continentId": "oceania",
+      "labelPosition": {
+        "x": 1870,
+        "y": 642
+      }
+    },
+    {
+      "id": "oceania-04",
+      "number": 62,
+      "continentId": "oceania",
+      "labelPosition": {
+        "x": 1741,
+        "y": 785
+      }
+    }
+  ]
+}
