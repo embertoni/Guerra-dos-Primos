@@ -1,4 +1,4 @@
-import {
+﻿import {
   board,
   continents,
   territories,
@@ -6,26 +6,37 @@ import {
   type Player,
 } from '@primos/shared';
 import { useMapNavigation } from './useMapNavigation';
+import { getLabelLayout } from './labelLayout';
+import { type TerritoryChips } from '@primos/shared/game';
 export type PreviewOwners = Readonly<Record<string, string | null>>;
 interface Props {
   selectedId: string | null;
   owners: PreviewOwners;
+  chips?: TerritoryChips;
   players: readonly Player[];
   onSelect: (id: string) => void;
   showNumbers: boolean;
   mode: 'vector' | 'original' | 'overlay';
+  interactive: boolean;
 }
 export function Board({
   selectedId,
   owners,
+  chips,
   players,
   onSelect,
   showNumbers,
   mode,
+  interactive,
 }: Props) {
   const navigation = useMapNavigation();
+  function select(id: string) {
+    if (interactive) onSelect(id);
+  }
   return (
-    <div className={`board-viewport${navigation.dragging ? ' dragging' : ''}`}>
+    <div
+      className={`board-viewport${navigation.dragging ? ' dragging' : ''}${interactive ? '' : ' board-locked'}`}
+    >
       <svg
         ref={navigation.svgRef}
         {...navigation.handlers}
@@ -34,7 +45,11 @@ export function Board({
         tabIndex={0}
         role="group"
         aria-label="Tabuleiro com 42 territórios"
-        aria-description="Arraste para mover, use a roda do mouse para ampliar. No teclado: setas, mais, menos e zero para recentralizar."
+        aria-description={
+          interactive
+            ? 'Arraste para mover, use a roda do mouse para ampliar. No teclado: setas, mais, menos e zero para recentralizar.'
+            : 'Inicie a partida para selecionar territórios. Você pode arrastar e ampliar o mapa.'
+        }
       >
         <title>Guerra dos Primos — mapa para revisão</title>
         <g
@@ -49,71 +64,102 @@ export function Board({
               height={board.height}
             />
           )}
-          {territories.map((territory) => {
-            const owner = players.find((p) => p.id === owners[territory.id]);
-            const continent = continents.find(
-              (c) => c.id === territory.continentId,
-            )!;
-            const selected = territory.id === selectedId;
-            const label = `Território ${territory.number}, ${continent.name}, ${owner ? `domínio de ${owner.displayName}` : 'neutro'}`;
-            return (
-              <g
-                key={territory.id}
-                id={`territory-${territory.id}`}
-                className={`territory${selected ? ' selected' : ''}${owner ? ' occupied' : ''}`}
-                role="button"
-                tabIndex={0}
-                aria-label={label}
-                aria-pressed={selected}
-                data-territory-id={territory.id}
-                onClick={() => onSelect(territory.id)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    onSelect(territory.id);
-                  }
-                }}
-              >
-                <title>{label}</title>
-                {geometry[territory.id as keyof typeof geometry].map(
-                  (path, index) => (
-                    <path
-                      key={index}
-                      d={path}
-                      fill={owner?.color ?? continent.baseColor}
-                      className="land"
-                    />
-                  ),
-                )}
-                {showNumbers && (
+          <g className="territory-layer">
+            {territories.map((territory) => {
+              const owner = players.find((p) => p.id === owners[territory.id]);
+              const continent = continents.find(
+                (c) => c.id === territory.continentId,
+              )!;
+              const selected = territory.id === selectedId;
+              const chip = chips?.[territory.id];
+              const label = `Território ${territory.number}, ${continent.name}, ${owner ? `domínio de ${owner.displayName}` : 'neutro'}${chip ? `, ficha de ${chip.points} ${chip.points === 1 ? 'ponto' : 'pontos'}` : ''}`;
+              return (
+                <g
+                  key={territory.id}
+                  id={`territory-${territory.id}`}
+                  className={`territory${selected ? ' selected' : ''}${owner ? ' occupied' : ''}`}
+                  role="button"
+                  tabIndex={interactive ? 0 : -1}
+                  aria-disabled={!interactive}
+                  aria-label={label}
+                  aria-pressed={selected}
+                  data-territory-id={territory.id}
+                  onClick={() => select(territory.id)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      select(territory.id);
+                    }
+                  }}
+                >
+                  <title>{label}</title>
+                  {geometry[territory.id as keyof typeof geometry].map(
+                    (path, index) => (
+                      <path
+                        key={index}
+                        d={path}
+                        fill={owner?.color ?? continent.baseColor}
+                        className="land"
+                      />
+                    ),
+                  )}
+                </g>
+              );
+            })}
+          </g>
+          <g className="marker-layer" aria-hidden="true">
+            {territories.map((territory) => {
+              const owner = players.find((p) => p.id === owners[territory.id]);
+              const chip = chips?.[territory.id];
+              const label = getLabelLayout(territory);
+              return (
+                <g key={territory.id} data-markers-for={territory.id}>
+                  {owner && (
+                    <g className="owner-label">
+                      <rect
+                        x={label.x - 20}
+                        y={label.y + 18}
+                        width="40"
+                        height="24"
+                        rx="7"
+                      />
+                      <text x={label.x} y={label.y + 31}>
+                        J{owner.seatIndex + 1}
+                      </text>
+                    </g>
+                  )}
+                  {chip && (
+                    <g className="map-chip">
+                      <circle cx={label.x + 38} cy={label.y + 30} r="16" />
+                      <text x={label.x + 38} y={label.y + 31}>
+                        {chip.points}
+                      </text>
+                    </g>
+                  )}
+                </g>
+              );
+            })}
+          </g>
+          {showNumbers && (
+            <g className="number-layer" aria-hidden="true">
+              {territories.map((territory) => {
+                const label = getLabelLayout(territory);
+                return (
                   <text
+                    key={territory.id}
                     className="territory-number"
-                    x={territory.labelPosition.x}
-                    y={territory.labelPosition.y}
+                    data-number-for={territory.id}
+                    x={label.x}
+                    y={label.y}
+                    style={{ fontSize: label.fontSize }}
+                    onClick={() => select(territory.id)}
                   >
                     {territory.number}
                   </text>
-                )}
-                {owner && (
-                  <g className="owner-label">
-                    <rect
-                      x={territory.labelPosition.x - 20}
-                      y={territory.labelPosition.y + 18}
-                      width="40"
-                      height="24"
-                      rx="7"
-                    />
-                    <text
-                      x={territory.labelPosition.x}
-                      y={territory.labelPosition.y + 31}
-                    >
-                      J{owner.seatIndex + 1}
-                    </text>
-                  </g>
-                )}
-              </g>
-            );
-          })}
+                );
+              })}
+            </g>
+          )}
         </g>
       </svg>
       <button

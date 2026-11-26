@@ -6,6 +6,11 @@ test('seleção, domínio independente, referência e recarga', async ({
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('/');
+  await page.getByLabel('Nome do jogador 1').fill('Ana');
+  await page.getByLabel('Nome do jogador 2').fill('Bruno');
+  await page
+    .getByRole('button', { name: 'Iniciar partida', exact: true })
+    .click();
   await expect(page.getByRole('button', { name: /^Território / })).toHaveCount(
     42,
   );
@@ -18,13 +23,21 @@ test('seleção, domínio independente, referência e recarga', async ({
     ).toHaveAttribute('aria-pressed', 'true');
   }
   await page.getByLabel('Escolher território').selectOption('north-01');
-  await page.getByLabel('Proprietário de teste').selectOption('preview-a');
+  await page
+    .getByRole('button', { name: 'Registrar ficha', exact: true })
+    .click();
   await expect(
     page.getByRole('button', { name: /^Território 907,/ }),
   ).toHaveAccessibleName(/domínio de Ana/);
   await expect(
     page.getByRole('button', { name: /^Território 618,/ }),
   ).toHaveAccessibleName(/neutro/);
+  await expect(
+    page.getByRole('listitem', { name: 'Ana: 1 ponto', exact: true }),
+  ).toBeVisible();
+  await page.locator('.details').evaluate((el) => {
+    el.scrollTop = 0;
+  });
   await page.screenshot({
     path: `test-results/${info.project.name}-mapa.png`,
     fullPage: true,
@@ -49,8 +62,40 @@ test('teclado e clique ou toque selecionam a forma real', async ({
 }) => {
   await page.goto('/');
   const region = page.getByRole('button', { name: /^Território 907,/ });
-  if (isMobile) await region.tap();
-  else await region.click();
+  await page.getByLabel('Nome do jogador 1').fill('Ana');
+  await page.getByLabel('Nome do jogador 2').fill('Bruno');
+  await page
+    .getByRole('button', { name: 'Iniciar partida', exact: true })
+    .click();
+  const point = await page.locator('.board').evaluate((svg) => {
+    const p = new DOMPoint(160, 168).matrixTransform(
+      (svg as SVGSVGElement).getScreenCTM()!,
+    );
+    const box = svg.getBoundingClientRect();
+    return {
+      x: p.x,
+      y: p.y,
+      dx: box.x + box.width / 2 - p.x,
+      dy: box.y + box.height * 0.25 - p.y,
+      startX: box.x + box.width / 2,
+      startY: box.y + 40,
+    };
+  });
+  await page.mouse.move(point.startX, point.startY);
+  await page.mouse.down();
+  await page.mouse.move(point.startX + point.dx, point.startY + point.dy, {
+    steps: 8,
+  });
+  await page.mouse.up();
+  const target = await page.locator('.board').evaluate((svg) => {
+    const camera = svg.querySelector<SVGGElement>('.map-camera')!;
+    const point = new DOMPoint(160, 168).matrixTransform(
+      camera.getScreenCTM()!,
+    );
+    return { x: point.x, y: point.y };
+  });
+  if (isMobile) await page.touchscreen.tap(target.x, target.y);
+  else await page.mouse.click(target.x, target.y);
   await expect(region).toHaveAttribute('aria-pressed', 'true');
   const other = page.getByRole('button', { name: /^Território 618,/ });
   await region.focus();
@@ -69,6 +114,11 @@ test('cada território recebe clique ou toque dentro de um path visível', async
 }) => {
   test.setTimeout(90000);
   await page.goto('/');
+  await page.getByLabel('Nome do jogador 1').fill('Ana');
+  await page.getByLabel('Nome do jogador 2').fill('Bruno');
+  await page
+    .getByRole('button', { name: 'Iniciar partida', exact: true })
+    .click();
   for (const territory of territories) {
     await page
       .getByRole('button', { name: 'Recentralizar mapa', exact: true })
@@ -97,7 +147,7 @@ test('cada território recebe clique ou toque dentro de um path visível', async
       const viewport = shape.ownerSVGElement!.getBoundingClientRect();
       return {
         dx: viewport.x + viewport.width / 2 - point.x,
-        dy: viewport.y + viewport.height / 2 - point.y,
+        dy: viewport.y + viewport.height * 0.3 - point.y,
         startX: viewport.x + viewport.width / 2,
         startY: viewport.y + 40,
       };
@@ -114,7 +164,7 @@ test('cada território recebe clique ou toque dentro de um path visível', async
       const viewport = await page.locator('.board').boundingBox();
       await page.mouse.move(
         viewport!.x + viewport!.width / 2,
-        viewport!.y + viewport!.height / 2,
+        viewport!.y + viewport!.height * 0.3,
       );
       await page.mouse.wheel(0, -900);
       await expect
@@ -136,7 +186,12 @@ test('cada território recebe clique ou toque dentro de um path visível', async
           );
           if (!shape.isPointInFill(local)) continue;
           const screen = local.matrixTransform(matrix);
-          if (document.elementFromPoint(screen.x, screen.y) === shape)
+          const hit = document.elementFromPoint(screen.x, screen.y);
+          if (
+            hit === shape ||
+            hit?.getAttribute('data-number-for') ===
+              shape.parentElement?.getAttribute('data-territory-id')
+          )
             return { x: screen.x, y: screen.y };
         }
       return null;
@@ -156,6 +211,11 @@ test('tela contínua, arraste sem seleção, zoom pelo scroll e recentralizaçã
 }) => {
   await page.goto('/');
   const map = page.locator('.board');
+  await page.getByLabel('Nome do jogador 1').fill('Ana');
+  await page.getByLabel('Nome do jogador 2').fill('Bruno');
+  await page
+    .getByRole('button', { name: 'Iniciar partida', exact: true })
+    .click();
   const camera = page.locator('.map-camera');
   const initial = await camera.getAttribute('transform');
   const box = (await map.boundingBox())!;
@@ -166,7 +226,7 @@ test('tela contínua, arraste sem seleção, zoom pelo scroll e recentralizaçã
   expect(box.y + box.height).toBe(page.viewportSize()!.height);
   expect(
     await page
-      .locator('.map-controls')
+      .locator('.map-overlays')
       .evaluate((el) => getComputedStyle(el).position),
   ).toBe('fixed');
   await page.getByLabel('Escolher território').selectOption('north-01');
@@ -175,11 +235,10 @@ test('tela contínua, arraste sem seleção, zoom pelo scroll e recentralizaçã
   await page.mouse.move(box.x + box.width / 2 + 35, box.y + 95, { steps: 8 });
   await page.mouse.up();
   await expect(camera).not.toHaveAttribute('transform', initial!);
-  await expect(page.locator('[aria-pressed="true"]')).toHaveAttribute(
-    'data-territory-id',
-    'north-01',
-  );
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await expect(
+    page.locator('[data-territory-id][aria-pressed="true"]'),
+  ).toHaveAttribute('data-territory-id', 'north-01');
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height * 0.25);
   await page.mouse.wheel(0, -400);
   await expect
     .poll(() => camera.getAttribute('transform'))
