@@ -19,6 +19,7 @@ export default function App() {
   const [initialPlayers, setInitialPlayers] = useState<Player[] | undefined>();
   const [mode, setMode] = useState<'vector' | 'original' | 'overlay'>('vector');
   const [showNumbers, setShowNumbers] = useState(true);
+  const [legendExpanded, setLegendExpanded] = useState(true);
   const [timerDuration, setTimerDuration] = useState('60');
   const selected = territories.find((t) => t.id === selectedId);
   const continent = continents.find((c) => c.id === selected?.continentId);
@@ -69,34 +70,71 @@ export default function App() {
           )}
           <div className="map-overlays">
             {game && <Scoreboard game={game} />}
-            <section className="map-controls" aria-label="Controles do mapa">
-              <ul className="legend" aria-label="Legenda geográfica">
-                {continents.map((c) => (
-                  <li key={c.id}>
-                    <i style={{ background: c.baseColor }} />
-                    {c.name}
-                  </li>
-                ))}
-              </ul>
-              <label>
-                Visualização
-                <select
-                  value={mode}
-                  onChange={(e) => setMode(e.target.value as typeof mode)}
+            <section
+              className={`map-controls${legendExpanded ? '' : ' is-collapsed'}`}
+              aria-label="Controles do mapa"
+            >
+              <div className="legend-header">
+                {legendExpanded && <span>Legenda</span>}
+                <button
+                  type="button"
+                  className="legend-toggle"
+                  aria-label={
+                    legendExpanded ? 'Recolher legenda' : 'Mostrar legenda'
+                  }
+                  title={
+                    legendExpanded ? 'Recolher legenda' : 'Mostrar legenda'
+                  }
+                  aria-expanded={legendExpanded}
+                  aria-controls="map-legend-content"
+                  onClick={() => setLegendExpanded((expanded) => !expanded)}
                 >
-                  <option value="vector">Mapa vetorizado</option>
-                  <option value="original">Imagem original</option>
-                  <option value="overlay">Comparar contornos</option>
-                </select>
-              </label>
-              <label className="checkbox">
-                <input
-                  type="checkbox"
-                  checked={showNumbers}
-                  onChange={(e) => setShowNumbers(e.target.checked)}
-                />
-                Números
-              </label>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d={legendExpanded ? 'm6 9 6 6 6-6' : 'm6 15 6-6 6 6'}
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div
+                id="map-legend-content"
+                className="legend-content"
+                hidden={!legendExpanded}
+              >
+                <ul className="legend" aria-label="Legenda geográfica">
+                  {continents.map((c) => (
+                    <li key={c.id}>
+                      <i style={{ background: c.baseColor }} />
+                      {c.name}
+                    </li>
+                  ))}
+                </ul>
+                <label>
+                  Visualização
+                  <select
+                    value={mode}
+                    onChange={(e) => setMode(e.target.value as typeof mode)}
+                  >
+                    <option value="vector">Mapa vetorizado</option>
+                    <option value="original">Imagem original</option>
+                    <option value="overlay">Comparar contornos</option>
+                  </select>
+                </label>
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={showNumbers}
+                    onChange={(e) => setShowNumbers(e.target.checked)}
+                  />
+                  Números
+                </label>
+              </div>
             </section>
           </div>
         </section>

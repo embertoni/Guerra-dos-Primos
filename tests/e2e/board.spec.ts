@@ -1,5 +1,59 @@
 import { test, expect } from '@playwright/test';
 import { territories } from '../../packages/shared/src/index';
+
+test('ilha inferior seleciona o 62 e recebe o mesmo domínio sem afetar o 369', async ({
+  page,
+  isMobile,
+}) => {
+  await page.goto('/');
+  await page.getByLabel('Nome do jogador 1').fill('Ana');
+  await page.getByLabel('Nome do jogador 2').fill('Bruno');
+  const color = await page.getByLabel('Cor do jogador 1').inputValue();
+  await page
+    .getByRole('button', { name: 'Iniciar partida', exact: true })
+    .click();
+  const target = async () =>
+    page.locator('.map-camera').evaluate((camera) => {
+      const point = new DOMPoint(1957, 881).matrixTransform(
+        (camera as SVGGElement).getScreenCTM()!,
+      );
+      return { x: point.x, y: point.y };
+    });
+  const start = await target();
+  const box = (await page.locator('.board').boundingBox())!;
+  const x = box.x + box.width / 2,
+    y = box.y + box.height * 0.3;
+  await page.mouse.move(x, box.y + 40);
+  await page.mouse.down();
+  await page.mouse.move(x + x - start.x, box.y + 40 + y - start.y, {
+    steps: 8,
+  });
+  await page.mouse.up();
+  await page.mouse.move(x, y);
+  await page.mouse.wheel(0, -700);
+  await expect
+    .poll(() => page.locator('.map-camera').getAttribute('transform'))
+    .not.toContain('scale(1)');
+  const point = await target();
+  if (isMobile) await page.touchscreen.tap(point.x, point.y);
+  else await page.mouse.click(point.x, point.y);
+  const territory = page.locator('[data-territory-id="oceania-04"]');
+  await expect(territory).toHaveAttribute('aria-pressed', 'true');
+  await page
+    .getByRole('button', { name: 'Registrar ficha', exact: true })
+    .click();
+  for (const path of await territory.locator('path').all())
+    await expect(path).toHaveAttribute('fill', color);
+  await expect(
+    page.locator('[data-territory-id="oceania-03"]'),
+  ).toHaveAccessibleName(/neutro/);
+  await page.getByLabel('Visualização').selectOption('original');
+  await expect(page.locator('svg image')).toHaveAttribute(
+    'href',
+    '/assets/tabuleiro-original.png',
+  );
+  await expect(page.locator('.number-layer text')).toHaveCount(42);
+});
 test('seleção, domínio independente, referência e recarga', async ({
   page,
 }, info) => {

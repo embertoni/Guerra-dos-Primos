@@ -1,38 +1,39 @@
 # Revisão do mapa
 
-Na aplicação, números são desenhados na última camada, depois de todos os territórios e marcadores, para que fronteiras posteriores não cubram os dígitos. Ajustes visuais específicos de fonte e posição ficam em `apps/web/src/features/board/labelLayout.ts`, preservando o catálogo e a geometria de origem. O SVG gerado pela ferramenta de traçado continua sendo a referência de geometria; os ajustes finais de rótulos pertencem à apresentação da aplicação. Os testes de navegador conferem as 42 âncoras nos territórios correspondentes e o espaçamento entre os rótulos em desktop e celular. Use zoom para inspecionar as regiões pequenas.
+Referência atual: `tabuleiro-war.png`, sem números, 2000 × 1075. Cópia idêntica servida em `apps/web/public/assets/tabuleiro-original.png`. Os 42 IDs, números, continentes e âncoras do catálogo anterior foram preservados; a imagem nova determina apenas a geometria e as cores. Versão: `clean-trace-v2`. O JPEG público anterior permanece como registro histórico.
 
-Referência recebida: `tabuleiro-war.jpeg`, 2000 × 1075. Os 42 números foram comparados visualmente com o inventário de `REGRAS.md`; confira a tabela em [inventario.md](inventario.md). O SVG usa exatamente esse viewBox e preserva as posições dos continentes.
+Números são uma camada independente, acima das fronteiras e fichas, inclusive no modo original. Ajustes de apresentação ficam em `apps/web/src/features/board/labelLayout.ts`. Os testes conferem as 42 âncoras e o espaçamento em desktop e celular.
 
-## Fonte e regeneração
+## Extração reproduzível
 
-`scripts/trace-board.py` contém IDs geográficos por posição, números, âncoras e divisões internas explícitas. O algoritmo extrai as cores, repara interrupções e simplifica os contornos com tolerância de 1,1 pixel. Não há retângulos de hit testing. Cada path fechado integra o grupo SVG de um único território.
+`scripts/board-trace-config.json` registra cores, três sementes alternativas, dimensões e tolerâncias. `scripts/trace-board.py` lê o catálogo existente, separa componentes pelas cores e fronteiras do PNG e gera paths fechados com simplificação de 0,45 pixel. Variações de até 3 unidades por canal RGB são aceitas para evitar buracos falsos causados por tons quase idênticos no arquivo editado. Água e bordas escuras são preservadas, incluindo lagos como subpaths SVG com preenchimento `evenodd`.
 
-Para regenerar, opcionalmente instale as ferramentas Python (não são necessárias para usar a aplicação):
+Na América do Sul, pequenas aberturas nas linhas finas conectam as áreas de 379, 55 e 322. Somente esse componente passa por erosão de 1 pixel para separar os núcleos; os pixels originais são então restaurados ao núcleo mais próximo. Isso não desloca o litoral. A intervenção consta no relatório e merece revisão humana. Não há recortes aproximados ou contornos manuais sob antigos dígitos.
+
+Ilhas desconectadas são associadas pela menor distância euclidiana entre suas bordas e o corpo principal de cada território do mesmo continente. Outras ilhas não servem como ponte nessa medição. Esse critério foi solicitado pelo responsável. As três ilhotas entre Austrália e Indonésia e as duas ilhas da Nova Zelândia pertencem agora ao **62**, enquanto ilhas mais próximas da Nova Guiné continuam no **369**. Veja [a divisão colorida da Oceania](ilhas-oceania.png).
+
+Há um empate exato na pequena ilha em `(212,243)`, entre 467 e 471: ambos ficam a 6,403 pixels. O desempate técnico estável por ID mantém 467, sinalizado com `nearTie` no relatório para revisão. Isso não estabelece adjacência ou regra de ataque.
+
+## Regeneração e auditoria
+
+Ferramentas opcionais para manutenção, dispensáveis para executar a aplicação: Python, Pillow, NumPy e OpenCV. O ambiente local usa OpenCV instalado em `.tools/python`. Execute na raiz:
 
 ```sh
-python -m pip install --target .tools/python opencv-python-headless==5.1.0.95
 python scripts/trace-board.py
 python scripts/audit-geometry.py
 npm run format
 npm test
+npm run test:e2e
 ```
 
-A geração atualiza catálogo, geometria, inventário e `tabuleiro-vetorizado.svg`. Execute na raiz. Modifique a fonte e regenere em vez de editar somente os arquivos gerados. A imagem original não é regravada.
+A geração atualiza catálogo, geometria, inventário, SVG e [relatório JSON](mapa-auditoria.json), com SHA-256, associação/distâncias de 40 componentes de ilhas e métricas. Modifique a configuração ou fonte e regenere; não edite apenas o resultado. O PNG de origem não é regravado. A cópia pública deve permanecer idêntica à origem.
 
-A auditoria rasteriza os paths e verifica sobreposição dos interiores, excluindo uma margem de 2 pixels das bordas; também produz `mapa-vetor.png` para inspeção. Resultado sem sobreposição não prova ausência de lacunas nem associação correta das ilhas. Os testes Playwright movem cada território ao centro da área livre com arraste real e verificam clique no desktop e toque em emulação móvel, com zoom pela roda do mouse no cenário móvel.
+A auditoria recalcula a interseção/união (IoU) entre áreas coloridas da fonte e rasterização dos paths, verifica integridade do arquivo e ausência de sobreposição de interiores, descontando 1 pixel de borda. Também produz [mapa isolado](mapa-vetor.png) e diagnóstico da Oceania. Resultado atual: IoU por continente de **99,71% a 99,93%**, sem sobreposição de interiores e sem componentes coloridos descartados pelo limiar de 4 pixels. A métrica considera preenchimentos com tolerância RGB; não mede os traços pretos, não prova cada fronteira interna e não substitui revisão visual. Playwright verifica seleção real dos 42 territórios, rótulos e seleção/domínio da ilha do 62 em desktop e toque móvel.
 
-O território 150 usa agora um único contorno manual revisado com o original: os dígitos 1 e 0 não participam da extração de litoral. A reentrância do fiorde permanece. A correção está na fonte de geração e possui teste de regressão com pontos amostrados na imagem.
+## Como melhorar a fonte
 
-## Conferência humana necessária
+O melhor material é um **SVG ou PDF vetorial original**, com cada território em um contorno fechado. Se houver apenas raster, prefira PNG sem perdas na maior resolução nativa, fronteiras contínuas e contrastantes e, idealmente, uma cor diferente para cada um dos 42 territórios. Evite ampliar artificialmente a imagem ou salvar em JPEG. Uma indicação explícita de quais ilhas pertencem a cada território resolve empates que proximidade sozinha não esclarece.
 
-Na aplicação, use **Comparar contornos**, amplie com a roda do mouse e arraste para examinar os detalhes. Use a mira para restaurar a visão inicial. A sobreposição não substitui a alternância com o original: ela também pode dificultar distinguir linhas próximas. Confirme:
+## Revisão humana pendente
 
-- Litoral e fronteiras internas de todos os territórios, sem lacunas ou sobreposição nas bordas compartilhadas; a simplificação pode produzir desvios de poucos pixels.
-- Faixas 397/302/976, pequenas regiões europeias e o estreitamento do território 822. Os números impressos tocaram essas fronteiras e exigiram reparos.
-- Arquipélagos do norte: agrupamento provisório das ilhas de alta latitude com 299 e das ilhas próximas ao Canadá. A imagem não explicita todas as associações. Confirmar antes de considerar o agrupamento final.
-- Ilhas da Oceania: agrupamento provisório de Nova Zelândia com 369, pequenas ilhas entre 265 e 369, e ilha ao sul da América com 415. Esses agrupamentos são técnicos para revisão, não regras de território aprovadas.
-- Pequenas ilhas costeiras africanas/asiáticas: confirmar associação, conferir lacunas e decidir se cada ilhota visível faz parte de algum dos 42 territórios. A seleção por lista permanece disponível para alvos muito pequenos.
-- Números legíveis, domínio neutro distinto de ocupado, proprietário também por texto, foco visível, toque e rolagem no celular.
-
-Não há aceite humano registrado. Confirmação dos direitos de uso ainda pendente antes de publicação externa. A fase 2 permanece bloqueada pela revisão, conforme solicitado.
+Use **Comparar contornos**, amplie com a roda e arraste; alterne com o original para conferir litoral, lagos, ilhas e as fronteiras finas da América do Sul. A numeração foi mantida e pode ser ocultada pela checkbox. O traçado do 150 agora vem diretamente do PNG sem dígitos. O aceite humano do mapa continua pendente; esta revisão não implementa salas, sincronização ou novas regras do jogo.

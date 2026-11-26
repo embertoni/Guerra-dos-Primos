@@ -1,5 +1,25 @@
 # Progresso — 25/11/2026
 
+## 26/11/2026 — Publicação da revisão do mapa e da legenda
+
+Responsável solicitou commit e push das alterações locais para `origin/main`. Entrega inclui a vetorização do PNG limpo, associação de ilhas por proximidade, numeração preservada, auditoria/testes/documentação e o painel de legenda recolhível. Validações da implementação registradas abaixo; `git diff --check` novamente aprovado antes do commit. Publicação de código, sem deploy da aplicação.
+
+## 26/11/2026 — Novo PNG limpo e revisão completa dos contornos
+
+Refeita a vetorização a partir de `tabuleiro-war.png`, sem números, mantendo os 42 IDs e a numeração associada a cada um. Cópia pública idêntica ao novo original; referência e smoke test atualizados para PNG. Números controláveis continuam presentes nos três modos de visualização. Configuração de cores/sementes/tolerâncias, helpers de paths compostos e relatório de auditoria separados da geometria gerada para facilitar manutenção. Lagos são preservados; variações mínimas de preenchimento não geram buracos falsos.
+
+Ilhas agora seguem a menor distância de borda ao corpo principal do mesmo continente, conforme solicitado. Cinco componentes inferiores da Oceania pertencem ao 62, incluindo Nova Zelândia; 369 preserva as ilhas mais próximas da Nova Guiné. Um empate entre 467/471 fica provisoriamente com 467 e está sinalizado no relatório. Pequenas aberturas nas fronteiras de 379/55/322 exigiram separação de núcleos com erosão de 1 pixel e reconstrução do preenchimento original. Esses pontos e sugestões de fonte melhor constam em `MAPA.md`; a revisão humana continua pendente.
+
+Verificações executadas e aprovadas: `npm test` (22 testes), `npm run test:e2e` (18 cenários desktop/celular), `npm run build` (inclui typecheck), `npm run lint`, `node scripts/smoke-build.mjs`, geração e auditoria Python. Testes novos garantem identidade/número preservados e clique/toque em ilha do 62 com domínio compartilhado entre suas partes e independente do 369. Auditoria recalcula IoU dos preenchimentos por continente de 99,71% a 99,93%, sem sobreposição de interiores, e confere SHA-256 e cópia pública. Inspecionados PNG original, vetor isolado, diagnóstico da Oceania e capturas desktop/móvel. Uma amostra de teste inicialmente caiu na borda côncava de uma ilhota; corrigida para ponto interior, sem alterar geometria para satisfazer o teste.
+
+Artefatos: [mapa vetorizado](mapa-vetor.png), [divisão das ilhas](ilhas-oceania.png), [SVG](tabuleiro-vetorizado.svg) e [auditoria](mapa-auditoria.json). Nenhuma regra de jogo, sala, banco ou sincronização adicionada. Sem commit, push ou deploy nesta revisão. Alterações locais anteriores da legenda recolhível preservadas.
+
+## 26/11/2026 — Legenda recolhível
+
+Adicionado botão acessível com estado `aria-expanded` para recolher todo o painel da legenda, incluindo lista, visualização e números, para um único botão de 44 × 44 px. Reabrir preserva as escolhas. Estado exclusivamente visual, sem mudanças nas regras ou partida.
+
+Verificados e aprovados `npm run typecheck`, `npm run lint`, `npm run build`, os nove testes existentes de `App.test.tsx` e checagem de navegador em desktop e celular: painel completamente oculto quando recolhido, tamanho compacto e restauração das opções.
+
 ## Revisão atual — sobreposição de vitória
 
 Implementados placar atualizado antes da abertura do diálogo, identificação do vencedor por nome e cor e duas ações: **Voltar último movimento** e **Resetar jogo**. Diálogo nativo na camada superior, fundo bloqueado, header/main inertes, Escape e clique no fundo sem fechamento e foco restrito às ações. Timer anterior cancelado; comandos de turno/ficha bloqueados enquanto há vencedor.

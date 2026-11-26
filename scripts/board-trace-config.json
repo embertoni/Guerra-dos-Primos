@@ -1,0 +1,21 @@
+{
+  "source": "tabuleiro-war.png",
+  "version": "clean-trace-v2",
+  "size": [2000, 1075],
+  "simplificationPixels": 0.45,
+  "minimumComponentPixels": 4,
+  "colorTolerance": 3,
+  "colors": {
+    "north": [255, 127, 39],
+    "south": [34, 177, 76],
+    "europe": [0, 162, 232],
+    "africa": [234, 63, 247],
+    "asia": [255, 201, 14],
+    "oceania": [136, 0, 21]
+  },
+  "seeds": {
+    "europe-02": [925, 229],
+    "asia-12": [1785, 340],
+    "oceania-01": [1585, 603]
+  }
+}

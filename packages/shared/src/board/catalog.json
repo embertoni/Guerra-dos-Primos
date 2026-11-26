@@ -1,12 +1,12 @@
 {
   "width": 2000,
   "height": 1075,
-  "version": "original-trace-v1",
+  "version": "clean-trace-v2",
   "continents": [
     {
       "id": "north",
       "name": "América do Norte",
-      "baseColor": "#ff872e"
+      "baseColor": "#ff7f27"
     },
     {
       "id": "south",
@@ -16,22 +16,22 @@
     {
       "id": "europe",
       "name": "Europa",
-      "baseColor": "#0fa9d5"
+      "baseColor": "#00a2e8"
     },
     {
       "id": "africa",
       "name": "África",
-      "baseColor": "#e934ee"
+      "baseColor": "#ea3ff7"
     },
     {
       "id": "asia",
       "name": "Ásia",
-      "baseColor": "#ffce10"
+      "baseColor": "#ffc90e"
     },
     {
       "id": "oceania",
       "name": "Oceania",
-      "baseColor": "#970023"
+      "baseColor": "#880015"
     }
   ],
   "territories": [
@@ -413,5 +413,6 @@
         "y": 785
       }
     }
-  ]
+  ],
+  "referenceImage": "/assets/tabuleiro-original.png"
 }

@@ -29,6 +29,7 @@ export const board = Object.freeze({
   width: data.width,
   height: data.height,
   version: data.version,
+  referenceImage: data.referenceImage,
 });
 export const continents: readonly Readonly<Continent>[] = Object.freeze(
   data.continents.map((c) => Object.freeze(continentSchema.parse(c))),

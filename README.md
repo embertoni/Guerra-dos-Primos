@@ -23,9 +23,10 @@ Os mesmos comandos funcionam em PowerShell e Unix. Abra http://127.0.0.1:5173. H
 - Valide a resposta presencialmente, escolha o jogador e a ficha vermelha de 1, 2 ou 3 pontos e clique em **Registrar ficha**. Correções, transferências e retiradas pedem confirmação. Há uma ficha atual por território; substituir não acumula outra ficha sobre a anterior.
 - O placar flutuante acima da legenda mostra cor, nome e soma das fichas atuais em ordem decrescente. Ao alcançar 18 pontos, o placar é atualizado e abre uma sobreposição com nome e cor do vencedor. O restante da página fica bloqueado, inclusive por teclado; Escape e clique no fundo não fecham o diálogo.
 - Na vitória, **Voltar último movimento** restaura a partida imediatamente antes da ficha que causou a vitória, incluindo proprietário, pontos, vez e rodada, e libera os controles. **Resetar jogo** limpa o tabuleiro, pontos e rodadas e volta à preparação com os nomes e cores disponíveis para editar. O timer anterior é cancelado ao abrir a vitória.
-- Alterne entre mapa vetorizado, original e comparação dos contornos. A imagem original mantém os números impressos; o SVG controla seus próprios números no modo vetorizado.
+- Alterne entre mapa vetorizado, original e comparação dos contornos. A nova imagem não tem números impressos; a numeração anterior é controlada pelo SVG nos três modos.
 - Arraste o mapa com o botão esquerdo do mouse (ou com um dedo) e use a roda do mouse para ampliar no ponto do cursor. O botão com ícone de mira restaura posição e zoom. Com foco no mapa, use setas, `+`, `-` e `0`. A proporção e as coordenadas seguem o original de 2000 × 1075.
 - A tela contém header, mapa e sidebar à direita para seleção, timer e fichas. Ranking e legenda são painéis flutuantes fixos à esquerda; os turnos ficam na parte inferior da tela. Em telas estreitas, ranking e legenda sobem para reservar a faixa dos turnos. O sidebar tem rolagem própria quando necessário.
+- Use **Recolher legenda** para esconder todo o conteúdo do painel, incluindo visualização e números, deixando apenas um botão compacto. **Mostrar legenda** reabre o painel preservando suas escolhas.
 - Números ficam em uma camada SVG acima de fronteiras e fichas, com tamanhos e âncoras ajustados para as regiões menores. A geometria dos territórios permanece separada desse ajuste visual.
 
 **A partida fica apenas na memória deste navegador; recarregar reinicia o cadastro e o tabuleiro.** Abra dois navegadores para revisar em paralelo: eles têm estados locais independentes. Ainda não existem sala, código de entrada, credenciais, persistência ou sincronização. O fluxo de dois navegadores na mesma sala pertence à fase 2, ainda não implementada. Para recomeçar sem recarregar, abra **Opções da partida → Nova partida** e confirme; os nomes e cores anteriores ficam disponíveis para edição.
@@ -59,7 +60,7 @@ npm run test:e2e
 | `scripts/trace-board.py`                  | Fonte reproduzível da vetorização, com divisões explícitas     |
 | `docs/MAPA.md`                            | Procedimento e pendências da revisão visual                    |
 
-O arquivo recebido se chama `tabuleiro-war.jpeg`, embora os documentos iniciais citem `Tabuleiro_mar.jpeg`. A cópia servida está em `apps/web/public/assets/tabuleiro-original.jpeg`. O original e os documentos normativos foram preservados.
+O mapa atual é `tabuleiro-war.png`, substituído pelo responsável por uma versão sem números. A cópia servida é `apps/web/public/assets/tabuleiro-original.png`. A vetorização preserva os 42 números anteriores e associa ilhas por proximidade ao corpo principal do mesmo continente, incluindo as ilhas inferiores da Oceania no 62. O JPEG público anterior fica como histórico. Veja [procedimento, auditoria e sugestões para melhorar a fonte](docs/MAPA.md); um SVG/PDF vetorial original ou PNG com fronteiras fechadas e cores distintas por território melhoraria a extração.
 
 ## Build e implantação futura
 

@@ -59,7 +59,7 @@ export function Board({
           <rect width={board.width} height={board.height} fill="#09658e" />
           {mode !== 'vector' && (
             <image
-              href="/assets/tabuleiro-original.jpeg"
+              href={board.referenceImage}
               width={board.width}
               height={board.height}
             />
@@ -100,6 +100,7 @@ export function Board({
                         d={path}
                         fill={owner?.color ?? continent.baseColor}
                         className="land"
+                        fillRule="evenodd"
                       />
                     ),
                   )}

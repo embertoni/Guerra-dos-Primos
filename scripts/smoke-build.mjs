@@ -24,10 +24,10 @@ try {
   assert.equal(html.status, 200);
   assert.match(await html.text(), /Guerra dos Primos/);
   const original = await globalThis.fetch(
-    'http://127.0.0.1:3101/assets/tabuleiro-original.jpeg',
+    'http://127.0.0.1:3101/assets/tabuleiro-original.png',
   );
   assert.equal(original.status, 200);
-  assert.match(original.headers.get('content-type'), /image\/jpeg/);
+  assert.match(original.headers.get('content-type'), /image\/png/);
   log('Build servido: /health, / e imagem original — OK');
 } finally {
   child.kill();

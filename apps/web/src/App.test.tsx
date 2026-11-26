@@ -220,7 +220,7 @@ describe('revisão local do mapa', () => {
     });
     expect(document.querySelector('svg image')).toHaveAttribute(
       'href',
-      '/assets/tabuleiro-original.jpeg',
+      '/assets/tabuleiro-original.png',
     );
     fireEvent.click(screen.getByLabelText('Números'));
     expect(document.querySelectorAll('.territory-number')).toHaveLength(0);

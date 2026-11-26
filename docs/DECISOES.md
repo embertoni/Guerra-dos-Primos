@@ -1,5 +1,11 @@
 # Decisões técnicas
 
+## 2026-11-26 — Vetorização do PNG limpo e associação de ilhas
+
+O responsável substituiu a imagem por PNG sem números e pediu preservar a numeração e associar ilhas por proximidade. O catálogo anterior continua como fonte de identidade; a geometria é extraída das cores e fronteiras da nova imagem, com tolerância RGB de 3 e simplificação de 0,45 pixel. Sementes separadas da geometria identificam cada corpo principal. Um componente sul-americano conectado por falhas na linha passa por separação de núcleos com erosão de 1 pixel e reconstrução limitada ao preenchimento original. Lagos usam paths compostos com `evenodd`. Não se reaproveitam os reparos manuais motivados pelos antigos dígitos.
+
+Proximidade significa distância mínima entre bordas da ilha e do corpo principal, dentro do mesmo continente e sem encadear ilhas. Critério determinístico auditável, autorizado nesta tarefa, sem implicar conexões para ataques. Cinco componentes inferiores da Oceania passam ao 62. Um empate 467/471 é resolvido provisoriamente por ID em favor de 467, registrado no relatório para revisão. IDs, números, âncoras e estado do jogo permanecem independentes dessa extração. A referência pública passa a PNG e os números controlados ficam visíveis também sobre ela. Relatório registra hash, métricas e distâncias; auditoria independente recalcula cobertura e verifica interiores. Detalhes e limitações em `MAPA.md`.
+
 ## 2026-11-25 — Vitória modal e desfazer o movimento decisivo
 
 Solicitação: atualizar o placar e depois mostrar vencedor (nome e cor), com reset ou retorno do último movimento, impedindo interação fora da sobreposição. Decisão: diálogo HTML nativo com `showModal()` após o commit do estado e do placar no DOM, fundo de tela e isolamento `inert` do header/main. Escape não fecha; clique no fundo não fecha; foco inicial no desfazer e Tab/Shift+Tab circulam apenas nas ações do diálogo. O diálogo ocupa a camada superior do navegador, acima dos painéis fixos.

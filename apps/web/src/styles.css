@@ -172,9 +172,6 @@ input:focus-visible,
   fill: transparent;
   stroke: transparent;
 }
-.mode-original .territory-number {
-  display: none;
-}
 .mode-original .territory.selected .land,
 .mode-original .territory:focus-visible .land {
   stroke: #fff;
@@ -1184,4 +1181,50 @@ dd {
   .victory-dialog h2 {
     font-size: 26px;
   }
+}
+.legend-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.legend-toggle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  padding: 4px;
+  border: 1px solid #c5d6e0;
+  border-radius: 6px;
+  background: #f0f5f8;
+  color: #214962;
+}
+.legend-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+.legend-content > label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+}
+.map-overlays > .map-controls.is-collapsed {
+  width: 44px;
+  padding: 0;
+  border-radius: 8px;
+}
+.is-collapsed .legend-header {
+  margin: 0;
+}
+.is-collapsed .legend-toggle {
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+  border: 0;
+  background: transparent;
 }
