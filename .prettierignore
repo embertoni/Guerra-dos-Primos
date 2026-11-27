@@ -1,5 +1,6 @@
 package-lock.json
 .tools
+.wrangler
 dist
 node_modules
 test-results

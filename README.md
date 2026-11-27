@@ -64,6 +64,20 @@ O mapa atual é `tabuleiro-war.png`, substituído pelo responsável por uma vers
 
 ## Build e implantação futura
 
+### Cloudflare Workers — frontend estático
+
+`wrangler.jsonc` na raiz publica somente `apps/web/dist` como Static Assets, com fallback de SPA. O Wrangler é uma dependência de desenvolvimento com versão resolvida no lockfile. Não publica o Express nem adiciona persistência ou sincronização.
+
+```sh
+npm ci
+npm run build
+npx wrangler deploy --dry-run --outdir .wrangler/dry-run
+```
+
+Para integração com GitHub no Workers Builds, selecione `main`, mantenha o diretório raiz do repositório e o nome `guerra-dos-primos`. Build command: `npm ci && npm run build`; deploy command: `npx wrangler deploy`. Variáveis de build: `NODE_VERSION=24` e `SKIP_DEPENDENCY_INSTALL=true` (a instalação já ocorre no comando). `.wrangler/` está ignorado. A execução do dry-run não publica o site; o deploy real ocorre ao acionar a integração ou executar o comando sem `--dry-run`, com autenticação na Cloudflare.
+
+### Servidor Node para revisão local
+
 ```sh
 npm run build
 npm start

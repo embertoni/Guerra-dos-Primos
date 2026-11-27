@@ -1,5 +1,13 @@
 # Progresso — 25/11/2026
 
+## 27/11/2026 — Configuração do Cloudflare Workers
+
+Verificada a instalação feita pelo responsável: `npm ls wrangler --depth=0` e `npx --no-install wrangler --version` confirmam Wrangler 4.168.0, registrado em package.json e package-lock.json. Criado `wrangler.jsonc` para Static Assets de `apps/web/dist`, nome `guerra-dos-primos`, data de compatibilidade 2026-11-27 e fallback SPA; `.wrangler/` ignorado. README documenta validação e configuração do Workers Builds.
+
+Executados com sucesso `npm run build` (inclui typecheck) e `npx --no-install wrangler deploy --dry-run --outdir .wrangler/dry-run` (seis assets reconhecidos). O dry-run encerrou sem upload. A primeira execução do lint encontrou o worker temporário gerado pelo Wrangler; `.wrangler/` foi excluído também de ESLint e Prettier, como os demais artefatos de build. Envio ao GitHub solicitado expressamente pelo responsável; nenhuma publicação na Cloudflare foi executada nesta tarefa. Sem alterações em regras ou comportamento do jogo; testes funcionais não foram repetidos para esta mudança de configuração.
+
+ESLint aprovado na nova execução; `npm run lint` completo continua reprovado pela formatação de 16 arquivos preexistentes da interface/testes no commit remoto atual. Formatação da configuração nova, package.json e documentação desta entrega conferida separadamente e aprovada. Os arquivos preexistentes não foram reformatados nesta tarefa.
+
 ## 26/11/2026 — Publicação da revisão do mapa e da legenda
 
 Responsável solicitou commit e push das alterações locais para `origin/main`. Entrega inclui a vetorização do PNG limpo, associação de ilhas por proximidade, numeração preservada, auditoria/testes/documentação e o painel de legenda recolhível. Validações da implementação registradas abaixo; `git diff --check` novamente aprovado antes do commit. Publicação de código, sem deploy da aplicação.

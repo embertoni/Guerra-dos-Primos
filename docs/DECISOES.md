@@ -1,5 +1,9 @@
 # Decisões técnicas
 
+## 2026-11-27 — Preparação de Static Assets no Cloudflare Workers
+
+Para a versão atual, toda a partida roda no navegador e o Express apenas serve arquivos e health check. A configuração Wrangler publica somente o build do frontend, preservando a estrutura de workspaces e a arquitetura prevista para futuras salas. Sem entrypoint de servidor, bindings ou migração de banco. Wrangler como devDependency com lockfile, configuração versionada na raiz e saída local `.wrangler/` ignorada. Esta preparação não é deploy real nem implementa sincronização; a hospedagem do futuro servidor autoritativo precisará de avaliação própria.
+
 ## 2026-11-26 — Vetorização do PNG limpo e associação de ilhas
 
 O responsável substituiu a imagem por PNG sem números e pediu preservar a numeração e associar ilhas por proximidade. O catálogo anterior continua como fonte de identidade; a geometria é extraída das cores e fronteiras da nova imagem, com tolerância RGB de 3 e simplificação de 0,45 pixel. Sementes separadas da geometria identificam cada corpo principal. Um componente sul-americano conectado por falhas na linha passa por separação de núcleos com erosão de 1 pixel e reconstrução limitada ao preenchimento original. Lagos usam paths compostos com `evenodd`. Não se reaproveitam os reparos manuais motivados pelos antigos dígitos.
